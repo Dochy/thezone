@@ -1,54 +1,54 @@
-import { defineData, defineSchema } from '@aws-amplify/backend';
+import { a, defineData, type ClientSchema } from '@aws-amplify/backend';
+
+export const schema = a.schema({
+
+  Business: a.model({
+    name: a.string().required(),
+    brands: a.hasMany('Brand', 'businessId')
+  }).authorization(allow => [
+    allow.group('Admin'),
+    allow.group('User'),
+  ]),
+  
+  Brand: a.model({
+    name: a.string().required(),
+    businessId: a.id(),
+    business: a.belongsTo('Business','businessId'),
+    campaigns: a.hasMany('Campaign','brandId'),
+  }).authorization(allow => [
+    allow.group('Admin'),
+    allow.group('User'),
+  ]),
+
+  Campaign: a.model({
+    title: a.string().required(),
+    brandId: a.id(),
+    brand: a.belongsTo('Brand','brandId'),
+    assets: a.hasMany('Asset','campaignId'),
+  }).authorization(allow => [
+    allow.group('Admin'),
+    allow.group('User'),
+  ]),
+
+  Asset: a.model({
+    name: a.string().required(),
+    type: a.string(),
+    fileKey: a.string(),
+    campaignId: a.id(),
+    campaign: a.belongsTo('Campaign','campaignId'),
+  }).authorization(allow => [
+    allow.group('Admin'),
+    allow.group('User'),
+  ]),
+
+});
+
+export type Schema = ClientSchema<typeof schema>;
 
 export const data = defineData({
-  schema: defineSchema({
-    models: {
-      Company: {
-        fields: {
-          id: 'ID',
-          name: 'String',
-          brands: {
-            type: ['Brand'],
-            isArray: true,
-            association: { connectionType: 'HAS_MANY', associatedWith: 'companyId' },
-          },
-        },
-        authRules: [
-          { allow: 'groups', groups: ['CompanyAdmins'], operations: ['create', 'read', 'update', 'delete'] },
-        ],
-      },
-
-      Brand: {
-        fields: {
-          id: 'ID',
-          name: 'String',
-          companyId: 'ID',
-          campaigns: {
-            type: ['Campaign'],
-            isArray: true,
-            association: { connectionType: 'HAS_MANY', associatedWith: 'brandId' },
-          },
-        },
-        authRules: [
-          { allow: 'groups', groups: ['CompanyAdmins'], operations: ['create', 'read', 'update', 'delete'] },
-          { allow: 'groups', groups: ['BrandManagers'], operations: ['read'] }, // limited access
-        ],
-      },
-
-      Campaign: {
-        fields: {
-          id: 'ID',
-          name: 'String',
-          description: 'String',
-          mediaUrls: ['String'], // S3 URLs or keys
-          brandId: 'ID',
-          createdAt: 'AWSDateTime',
-        },
-        authRules: [
-          { allow: 'groups', groups: ['CompanyAdmins'], operations: ['create', 'read', 'update', 'delete'] },
-          { allow: 'groups', groups: ['BrandManagers'], operations: ['create', 'read', 'update'] },
-        ],
-      },
-    },
-  }),
+  schema,
+  authorizationModes: {
+    defaultAuthorizationMode: 'apiKey',
+    apiKeyAuthorizationMode: { expiresInDays: 30 }
+  }
 });

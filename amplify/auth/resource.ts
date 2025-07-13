@@ -2,14 +2,17 @@ import { defineAuth } from '@aws-amplify/backend';
 
 export const auth = defineAuth({
   loginWith: {
-    email: true, // or username if you prefer
+    email: true,
   },
   userAttributes: {
-    preferred_username: true, // optional
-    custom: {
-      companyId: 'String',     // custom attribute for company-level scoping (optional)
-      brandId: 'String',       // custom attribute for brand-level scoping (optional)
-    },
+    'custom:companyId': {
+      dataType: "DateTime", 
+      mutable: true 
+    }, // optional custom attribute
+    'custom:brandId': { 
+      mutable: true,
+      dataType: "DateTime", 
+    },   // optional custom attribute
   },
   groups: ['CompanyAdmins', 'BrandManagers'],
 });
