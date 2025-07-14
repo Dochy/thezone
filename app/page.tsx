@@ -8,7 +8,7 @@ import type { Schema } from "@/amplify/data/resource";
 import "./../app/app.css";
 import "@aws-amplify/ui-react/styles.css";
 
-//import outputs from "@/amplify_outputs.json";
+import outputs from "@/amplify_outputs.json";
 
 import { useAuthenticator } from "@aws-amplify/ui-react";
 
