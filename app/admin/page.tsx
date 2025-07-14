@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { generateClient } from 'aws-amplify/data';
-import { configureAmplify } from '@/lib/configure-amplify'; // ✅ Import it
+import { Amplify } from "aws-amplify";
+import { generateClient } from "aws-amplify/data";
+import type { Schema } from "@/amplify/data/resource";
 
-configureAmplify(); // ✅ Call it right away
+Amplify.configure(outputs);
+
 
 // ... rest of your code
 
