@@ -1,16 +1,35 @@
-'use client';
+"use client";
 
 import { useState, useEffect } from 'react';
 import { generateClient } from 'aws-amplify/data';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { configureAmplify } from '@/lib/configure-amplify'; // ✅ Import it
+
+configureAmplify(); // ✅ Call it right away
+
+// ... rest of your code
+
+
+
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+} from '@/components/ui/tabs';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 
 const client = generateClient();
 
-export default function Page() {
+export default function AdminDashboard() {
   const [businesses, setBusinesses] = useState<any[]>([]);
   const [brands, setBrands] = useState<any[]>([]);
   const [campaigns, setCampaigns] = useState<any[]>([]);
@@ -18,8 +37,11 @@ export default function Page() {
 
   const [newBusiness, setNewBusiness] = useState('');
   const [newBrand, setNewBrand] = useState('');
+  const [selectedBusiness, setSelectedBusiness] = useState('');
   const [newCampaign, setNewCampaign] = useState('');
+  const [selectedBrand, setSelectedBrand] = useState('');
   const [newAsset, setNewAsset] = useState({ name: '', type: '', fileKey: '' });
+  const [selectedCampaign, setSelectedCampaign] = useState('');
 
   useEffect(() => {
     client.models.Business.list().then(res => setBusinesses(res.data));
@@ -60,7 +82,15 @@ export default function Page() {
             <CardHeader><CardTitle>Add Brand</CardTitle></CardHeader>
             <CardContent className="space-y-4">
               <Input value={newBrand} onChange={(e) => setNewBrand(e.target.value)} placeholder="Brand Name" />
-              <Button onClick={() => handleAdd('Brand', { name: newBrand, businessId: businesses[0]?.id })} disabled={!businesses.length}>
+              <Select onValueChange={setSelectedBusiness} value={selectedBusiness}>
+                <SelectTrigger><SelectValue placeholder="Select Business" /></SelectTrigger>
+                <SelectContent>
+                  {businesses.map(b => (
+                    <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Button onClick={() => handleAdd('Brand', { name: newBrand, businessId: selectedBusiness })} disabled={!selectedBusiness}>
                 Create Brand
               </Button>
             </CardContent>
@@ -72,7 +102,15 @@ export default function Page() {
             <CardHeader><CardTitle>Add Campaign</CardTitle></CardHeader>
             <CardContent className="space-y-4">
               <Input value={newCampaign} onChange={(e) => setNewCampaign(e.target.value)} placeholder="Campaign Title" />
-              <Button onClick={() => handleAdd('Campaign', { title: newCampaign, brandId: brands[0]?.id })} disabled={!brands.length}>
+              <Select onValueChange={setSelectedBrand} value={selectedBrand}>
+                <SelectTrigger><SelectValue placeholder="Select Brand" /></SelectTrigger>
+                <SelectContent>
+                  {brands.map(b => (
+                    <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Button onClick={() => handleAdd('Campaign', { title: newCampaign, brandId: selectedBrand })} disabled={!selectedBrand}>
                 Create Campaign
               </Button>
             </CardContent>
@@ -86,7 +124,15 @@ export default function Page() {
               <Input value={newAsset.name} onChange={(e) => setNewAsset({ ...newAsset, name: e.target.value })} placeholder="Asset Name" />
               <Input value={newAsset.type} onChange={(e) => setNewAsset({ ...newAsset, type: e.target.value })} placeholder="Asset Type (e.g. image)" />
               <Input value={newAsset.fileKey} onChange={(e) => setNewAsset({ ...newAsset, fileKey: e.target.value })} placeholder="File Key (e.g. s3 url)" />
-              <Button onClick={() => handleAdd('Asset', { ...newAsset, campaignId: campaigns[0]?.id })} disabled={!campaigns.length}>
+              <Select onValueChange={setSelectedCampaign} value={selectedCampaign}>
+                <SelectTrigger><SelectValue placeholder="Select Campaign" /></SelectTrigger>
+                <SelectContent>
+                  {campaigns.map(c => (
+                    <SelectItem key={c.id} value={c.id}>{c.title}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Button onClick={() => handleAdd('Asset', { ...newAsset, campaignId: selectedCampaign })} disabled={!selectedCampaign}>
                 Create Asset
               </Button>
             </CardContent>
