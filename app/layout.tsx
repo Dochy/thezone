@@ -17,9 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Authenticator>
           {children}
-        </Authenticator>
       </body>
     </html>
   );
