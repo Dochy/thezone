@@ -24,7 +24,7 @@ export function LoginForm({
 
     try {
       await signIn({ username: email, password }) // ✅ Amplify Gen 2 login
-      router.push("/") // or wherever you want
+      router.push("/dashboard") // or wherever you want
     } catch (err: any) {
       console.error(err)
       setError(err.message || "Login failed")
