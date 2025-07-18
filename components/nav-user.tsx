@@ -30,6 +30,8 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 
+import { signOut } from 'aws-amplify/auth'
+
 export function NavUser({
   user,
 }: {
@@ -40,6 +42,11 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
+
+  async function handleSignOut() {
+    console.log('signout')
+    await signOut()
+  }
 
   return (
     <SidebarMenu>
@@ -102,7 +109,7 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleSignOut}>
               <LogOut />
               Log out
             </DropdownMenuItem>
