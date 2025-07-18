@@ -8,24 +8,29 @@ import { NavUser } from "@/components/nav-user"
 import { TeamSwitcher } from "@/components/team-switcher"
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader,SidebarRail } from "@/components/ui/sidebar"
 
-import { useEffect, useState } from 'react'
-import { getCurrentUser } from '@aws-amplify/auth'
-
-
 // This is sample data.
 const data = {
   user: {
     name: "The zone",
-    id: "1",
     email: "m@example.com",
     avatar: "/avatars/shadcn.jpg",
   },
   teams: [
     {
-      name: "Lucy",
+      name: "Acme Inc",
       logo: GalleryVerticalEnd,
       plan: "Enterprise",
-    }
+    },
+    {
+      name: "Acme Corp.",
+      logo: AudioWaveform,
+      plan: "Startup",
+    },
+    {
+      name: "Evil Corp.",
+      logo: Command,
+      plan: "Free",
+    },
   ],
   navMain: [
     {
@@ -133,24 +138,7 @@ const data = {
   ],
 }
 
-
-
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-
-  const [user, setUser] = useState<any>(null)
-
-  useEffect(() => {
-    getCurrentUser()
-      .then(setUser)
-      .catch(() => {
-        window.location.href = '/login'
-      })
-  }, [])
-
-  //data.user.name = user.username
-  //data.user.id = user.userId
-  //data.user.email = signInDetails.loginId
-
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>

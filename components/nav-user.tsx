@@ -1,11 +1,34 @@
 "use client"
 
-import { BadgeCheck,Bell,ChevronsUpDown,CreditCard,LogOut,Sparkles } from "lucide-react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar"
-import { signOut } from '@aws-amplify/auth'
+import {
+  BadgeCheck,
+  Bell,
+  ChevronsUpDown,
+  CreditCard,
+  LogOut,
+  Sparkles,
+} from "lucide-react"
 
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/avatar"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  useSidebar,
+} from "@/components/ui/sidebar"
 
 export function NavUser({
   user,
@@ -14,20 +37,9 @@ export function NavUser({
     name: string
     email: string
     avatar: string
-    id: string
   }
 }) {
   const { isMobile } = useSidebar()
-
-
-  const handleLogout = async () => {
-    try {
-      await signOut()
-      window.location.href = '/login'
-    } catch (err) {
-      console.error('Error signing out:', err)
-    }
-  }
 
   return (
     <SidebarMenu>
@@ -90,7 +102,7 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout}>
+            <DropdownMenuItem>
               <LogOut />
               Log out
             </DropdownMenuItem>

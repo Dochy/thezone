@@ -14,7 +14,6 @@
     "components": "@/components",
     "utils": "@/lib/utils",
     "ui": "@/components/ui",
-    "auth": "@/components/auth",
     "lib": "@/lib",
     "hooks": "@/hooks"
   },
