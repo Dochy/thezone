@@ -1,32 +1,34 @@
-import { GalleryVerticalEnd } from "lucide-react"
+"use client"
 
+import { useRouter } from "next/navigation"
+import { useEffect, useState } from 'react'
+import { getCurrentUser } from '@aws-amplify/auth'
 import { LoginForm } from "@/components/login-form"
 
-export default function LoginPage() {
+export default function Page() {
+
+  const [user, setUser] = useState<any>(null)
+  const router = useRouter()
+
+  useEffect(() => {
+    const checkUser = async () => {
+      try {
+        const user = await getCurrentUser()
+        setUser(user)
+      } catch {
+        router.push('/login')
+      }
+    }
+    checkUser()
+  }, [])
+
+  //check if allready logged in
+  if (user) router.push("/dashboard")
+
+  //if not show log in form
   return (
-    <div className="grid min-h-svh lg:grid-cols-2">
-      <div className="flex flex-col gap-4 p-6 md:p-10">
-        <div className="flex justify-center gap-2 md:justify-start">
-          <a href="#" className="flex items-center gap-2 font-medium">
-            <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
-              <GalleryVerticalEnd className="size-4" />
-            </div>
-            The Zone
-          </a>
-        </div>
-        <div className="flex flex-1 items-center justify-center">
-          <div className="w-full max-w-xs">
-            <LoginForm />
-          </div>
-        </div>
-      </div>
-      <div className="bg-muted relative hidden lg:block">
-        <img
-          src="/placeholder.svg"
-          alt="Image"
-          className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
-        />
-      </div>
+     <div className="flex min-h-screen items-center justify-center p-4">
+      <LoginForm />
     </div>
   )
 }

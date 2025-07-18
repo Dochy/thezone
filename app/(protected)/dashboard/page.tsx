@@ -3,9 +3,10 @@
 import { AppSidebar } from "@/components/app-sidebar"
 import { Separator } from "@/components/ui/separator"
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from 'react'
-import { getCurrentUser, signOut } from '@aws-amplify/auth'
+import { getCurrentUser } from '@aws-amplify/auth'
 
 export default function Page() {
 
@@ -13,11 +14,15 @@ export default function Page() {
   const router = useRouter()
 
   useEffect(() => {
-    getCurrentUser()
-      .then(setUser)
-      .catch(() => {
-        router.push("/login")
-      })
+    const checkUser = async () => {
+      try {
+        const user = await getCurrentUser()
+        setUser(user)
+      } catch {
+        router.push('/login')
+      }
+    }
+    checkUser()
   }, [])
 
   if (!user) return <div className="flex h-screen items-center justify-center">Loading...</div>
