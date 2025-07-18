@@ -1,4 +1,3 @@
-// app/confirm/page.tsx
 import { ConfirmSignupForm } from "@/components/confirmsignup"
 
 export default function ConfirmPage() {
