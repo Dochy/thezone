@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
+import Link from 'next/link'
+
 export function LoginForm({
   className,
   ...props
@@ -23,8 +25,8 @@ export function LoginForm({
     setError("")
 
     try {
-      await signIn({ username: email, password }) // ✅ Amplify Gen 2 login
-      router.push("/") // or wherever you want
+      await signIn({ username: email, password }) 
+      router.push("/dashboard") 
     } catch (err: any) {
       console.error(err)
       setError(err.message || "Login failed")
@@ -82,9 +84,7 @@ export function LoginForm({
       </div>
       <div className="text-center text-sm">
         Don&apos;t have an account?{" "}
-        <a href="#" className="underline underline-offset-4">
-          Sign up
-        </a>
+        <Link className="underline underline-offset-4" href="/signup">Sign Up</Link>
       </div>
     </form>
   )

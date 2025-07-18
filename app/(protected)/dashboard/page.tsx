@@ -1,8 +1,27 @@
+"use client"
+
 import { AppSidebar } from "@/components/app-sidebar"
 import { Separator } from "@/components/ui/separator"
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { useRouter } from "next/navigation"
+import { useEffect, useState } from 'react'
+import { getCurrentUser, signOut } from '@aws-amplify/auth'
 
 export default function Page() {
+
+  const [user, setUser] = useState<any>(null)
+  const router = useRouter()
+
+  useEffect(() => {
+    getCurrentUser()
+      .then(setUser)
+      .catch(() => {
+        router.push("/login")
+      })
+  }, [])
+
+  if (!user) return <div className="flex h-screen items-center justify-center">Loading...</div>
+
   return (
     <SidebarProvider>
       <AppSidebar />

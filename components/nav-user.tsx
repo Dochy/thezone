@@ -31,10 +31,9 @@ import {
 } from "@/components/ui/sidebar"
 
 import { signOut } from 'aws-amplify/auth'
+import { useRouter } from "next/navigation"
 
-export function NavUser({
-  user,
-}: {
+export function NavUser({ user }: {
   user: {
     name: string
     email: string
@@ -42,10 +41,16 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
+  const router = useRouter()
 
-  async function handleSignOut() {
-    console.log('signout')
-    await signOut()
+  //handle signout
+  const handleLogOut = async () => {
+    try {
+      await signOut()
+      .then(router.push("/login"))
+    } catch (err) {
+      console.error('Error signing out:', err)
+    }
   }
 
   return (
@@ -109,7 +114,7 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleSignOut}>
+            <DropdownMenuItem onClick={handleLogOut}>
               <LogOut />
               Log out
             </DropdownMenuItem>
