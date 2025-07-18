@@ -7,19 +7,55 @@ import { useEffect, useState } from 'react'
 import { getCurrentUser, signOut } from '@aws-amplify/auth'
 
 
+import { generateClient } from 'aws-amplify/data'
+import { type Schema } from '@/amplify/data/resource'
+
+
+const client = generateClient({ authMode: 'userPool' })
+
+
 export default function Page() {
 
   const [user, setUser] = useState<any>(null)
+  const [brands, setBrands] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<null | string>(null)
 
   useEffect(() => {
+
+     
+    const fetchBrands = async () => {
+      try {
+        const result = await client.models.Brand.list()
+        if (result.errors) {
+          setError('Failed to fetch todos')
+          console.log(result)
+        } else {
+          setBrands(result.data)
+          console.log(brands)
+        }
+      } catch (err) {
+        setError('An unexpected error occurred')
+        console.error(err);
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+
     getCurrentUser()
       .then(setUser)
+      .then(fetchBrands)
       .catch(() => {
         window.location.href = '/login'
       })
   }, [])
 
+
+
   if (!user) return <div className="flex h-screen items-center justify-center">Loading...</div>
+  //if (loading) return <div>Loading...</div>
+  //if (error) return <div>{error}</div>
 
   return (
     <SidebarProvider>
@@ -35,6 +71,7 @@ export default function Page() {
         </header>
 
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+
           <div className="grid auto-rows-min gap-4 md:grid-cols-3">
             <div className="bg-muted/50 aspect-video rounded-xl" />
             <div className="bg-muted/50 aspect-video rounded-xl" />
