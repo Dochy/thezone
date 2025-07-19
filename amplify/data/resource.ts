@@ -6,8 +6,8 @@ export const schema = a.schema({
     name: a.string().required(),
     brands: a.hasMany('Brand', 'businessId')
   }).authorization(allow => [
-    allow.group('Admin'),
-    allow.group('User'),
+    allow.group('CompanyAdmins'),
+    allow.group('BrandManagers'),
   ]),
   
   Brand: a.model({
@@ -16,8 +16,8 @@ export const schema = a.schema({
     business: a.belongsTo('Business','businessId'),
     campaigns: a.hasMany('Campaign','brandId'),
   }).authorization(allow => [
-    allow.group('Admin'),
-    allow.group('User'),
+    allow.group('CompanyAdmins'),
+    allow.group('BrandManagers'),
   ]),
 
   Campaign: a.model({
@@ -26,8 +26,8 @@ export const schema = a.schema({
     brand: a.belongsTo('Brand','brandId'),
     assets: a.hasMany('Asset','campaignId'),
   }).authorization(allow => [
-    allow.group('Admin'),
-    allow.group('User'),
+    allow.group('CompanyAdmins'),
+    allow.group('BrandManagers'),
   ]),
 
   Asset: a.model({
@@ -37,8 +37,8 @@ export const schema = a.schema({
     campaignId: a.id(),
     campaign: a.belongsTo('Campaign','campaignId'),
   }).authorization(allow => [
-    allow.group('Admin'),
-    allow.group('User'),
+    allow.group('CompanyAdmins'),
+    allow.group('BrandManagers'),
   ]),
 
 });

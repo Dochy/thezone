@@ -8,24 +8,46 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from 'react'
 import { getCurrentUser } from '@aws-amplify/auth'
 
+import { generateClient } from 'aws-amplify/data';
+import type { Schema } from '../amplify/data/resource';
+
+
+const client = generateClient<Schema>();
+
+
 export default function Page() {
 
   const [user, setUser] = useState<any>(null)
   const router = useRouter()
+  const [brands, setBrands] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const checkUser = async () => {
+    const checkUserAndFetch = async () => {
       try {
+        //check user
         const user = await getCurrentUser()
         setUser(user)
-      } catch {
+        console.log(user);
+        //get data
+        const { data, errors } = await client.models.Brand.list()
+
+        if (errors) {
+          console.error("Amplify errors:", errors)
+        } else {
+          setBrands(data ?? [])
+        }
+
+      } catch (err) {
         router.push('/login')
+      } finally {
+        setLoading(false)
       }
     }
-    checkUser()
+    checkUserAndFetch()
   }, [])
 
-  if (!user) return <div className="flex h-screen items-center justify-center">Loading...</div>
+  if (!user || loading) {return <div className="flex h-screen items-center justify-center">Loading...</div> }
 
   return (
     <SidebarProvider>
